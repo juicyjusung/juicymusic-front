@@ -1,10 +1,17 @@
 import { getKeyValue, updateVo } from '@/utils/CommonUtils';
 
+export interface AlbumArt {
+  name: string;
+  file: Blob | null;
+  src: string | null;
+}
+
 export interface Track {
   title: string;
   artist: string;
   album: string;
-  albumArt?: string;
+  albumArt: AlbumArt;
+  albumArtPath: string;
   file: File | null;
   filePath: string;
   createdAt?: Date | null;
@@ -15,7 +22,12 @@ export interface Track {
 export class TrackVo implements Track {
   public title = '';
   public album = '';
-  public albumArt = '';
+  public albumArt = {
+    name: '',
+    file: null,
+    src: '',
+  };
+  public albumArtPath = '';
   public artist = '';
   public file = null;
   public filePath = '';

@@ -33,6 +33,12 @@ export enum TracksGettersTypes {
 })
 export default class Tracks extends VuexModule {
   private trackList: Track[] = [];
+  private selectedTrack: Track | null = null;
+  private searchKeyword: string = '';
+
+  get [TracksGettersTypes.GET_FILTERED_TRACKS]() {
+    return this.trackList.filter(v => (this.searchKeyword ? v.title === this.searchKeyword : true));
+  }
 
   @Mutation
   [TracksMutationTypes.SET_TRACKLIST](payload: Track[]) {
@@ -67,6 +73,9 @@ export default class Tracks extends VuexModule {
     try {
       const formData: FormData = new FormData();
       formData.append('file', track.file as Blob);
+      if (track.albumArt.file) {
+        formData.append('image', track.albumArt.file, track.albumArt.name);
+      }
       formData.append('title', track.title);
       formData.append('artist', track.artist);
       formData.append('album', track.album);
@@ -84,5 +93,14 @@ export default class Tracks extends VuexModule {
     } catch (e) {
       console.error(e);
     }
+  }
+  @Action
+  [TracksActionTypes.SET_SELECTED_TRACK](track: Track) {
+    this.context.commit(TracksMutationTypes.SET_SELECTED_TRACK, track);
+  }
+
+  @Action
+  [TracksActionTypes.SET_SEARCH_KEYWORD](keyword: string) {
+    this.context.commit(TracksMutationTypes.SET_SEARCH_KEYWORD, keyword);
   }
 }
