@@ -21,27 +21,34 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Login from '@/views/Login.vue';
-import MusicTrackItem from '@/components/tracks/MusicTrackItem.vue';
 import MusicTrackList from '@/components/tracks/MusicTrackList.vue';
-import { Action } from 'vuex-class';
+import { Action, Getter, State } from 'vuex-class';
 import MyInfo from '@/components/user/MyInfo.vue';
 import AddTrackModal from '@/components/tracks/AddTrackModal.vue';
+import { Track } from '@/types/Track';
+import { TracksActionTypes, TracksGettersTypes, TracksStateTypes } from '@/store/tracks';
+import { AuthActionTypes } from '@/store/auth';
 
 @Component({
   components: {
     AddTrackModal,
     MyInfo,
     MusicTrackList,
-    MusicTrackItem,
     Login,
   },
 })
 export default class Main extends Vue {
-  @Action('logout', { namespace: 'auth' }) private logout!: () => void;
-  @Action('getAllTracks', { namespace: 'tracks' }) private getAllTracks!: () => [];
   /******************************************************************
-   * Store ex: @Action('login', { namespace: 'auth' }) private login!: (user: LoginInput) => ResponseBody;
+   * Store
    * ****************************************************************/
+  @State(TracksStateTypes.TRACK_LIST, { namespace: 'tracks' }) private data!: Track[];
+  @State(TracksStateTypes.SELECTED_TRACK, { namespace: 'tracks' }) private selectedTrack!: Track;
+  @Getter(TracksGettersTypes.GET_FILTERED_TRACKS, { namespace: 'tracks' }) private searchedList!: Track[];
+  @Action(AuthActionTypes.LOGOUT, { namespace: 'auth' }) private logout!: () => void;
+  @Action(TracksActionTypes.GET_ALL_TRACKS, { namespace: 'tracks' }) private getAllTracks!: () => [];
+  @Action(TracksActionTypes.SET_SEARCH_KEYWORD, { namespace: 'tracks' }) private setSearchKeyword!: (
+    keyword: string
+  ) => void;
 
   /******************************************************************
    * Props

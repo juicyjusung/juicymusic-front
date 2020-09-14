@@ -40,15 +40,23 @@ import { LoginInput, User } from '@/types/User';
 import { VForm } from '@/types/Common';
 import { getKeyValue } from '@/utils/CommonUtils';
 import { Action } from 'vuex-class';
-import { AxiosResponse } from 'axios';
 import { ResponseBody } from '@/types/Reponse';
+import { AuthActionTypes } from '@/store/auth';
 
 @Component({
   components: {},
 })
 export default class LoginForm extends Vue {
+  /******************************************************************
+   * Store
+   * ****************************************************************/
+  @Action(AuthActionTypes.LOGIN, { namespace: 'auth' }) private login!: (user: LoginInput) => ResponseBody;
+
+  /******************************************************************
+   * Props & Emit
+   * ****************************************************************/
   @Emit('onOpenSignup') private onOpenSignup() {}
-  @Action('login', { namespace: 'auth' }) private login!: (user: LoginInput) => ResponseBody;
+
   /******************************************************************
    * Variable
    * ****************************************************************/
@@ -76,7 +84,6 @@ export default class LoginForm extends Vue {
     if (this.formHasErrors) return;
     try {
       const body = await await this.login(this.loginInput);
-      console.log('%c [JL] submit - body', 'font-size: 16px; color:  red;', body);
       if (body.message) {
         this.$notify({
           group: 'all',

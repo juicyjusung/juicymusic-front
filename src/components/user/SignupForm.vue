@@ -52,12 +52,11 @@
 </template>
 <script lang="ts">
 import { Component, Emit, Vue } from 'vue-property-decorator';
-import { LoginInput, User } from '@/types/User';
 import { VForm } from '@/types/Common';
 import { getKeyValue } from '@/utils/CommonUtils';
 import { Action } from 'vuex-class';
-import { AxiosResponse } from 'axios';
 import { ResponseBody } from '@/types/Reponse';
+import { AuthActionTypes } from '@/store/auth';
 
 type SignupInput = {
   userId: string;
@@ -70,12 +69,19 @@ type SignupInput = {
   components: {},
 })
 export default class SignupForm extends Vue {
+  /******************************************************************
+   * Store
+   * ****************************************************************/
+  @Action(AuthActionTypes.SIGNUP, { namespace: 'auth' }) private signup!: (user: SignupInput) => ResponseBody;
+
+  /******************************************************************
+   * Props & Emit
+   * ****************************************************************/
   @Emit('onClose') private onClose() {}
-  @Action('signup', { namespace: 'auth' }) private signup!: (user: SignupInput) => ResponseBody;
+
   /******************************************************************
    * Variable
    * ****************************************************************/
-  private loginInput: User = { userId: '', password: '', name: '' };
   private signupInput: SignupInput = {
     userId: '',
     name: '',

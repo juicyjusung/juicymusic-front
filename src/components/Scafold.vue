@@ -9,7 +9,7 @@ import { Component, Vue } from 'vue-property-decorator';
 })
 export default class Template extends Vue {
   /******************************************************************
-   * Store ex: @Action('login', { namespace: 'auth' }) private login!: (user: LoginInput) => ResponseBody;
+   * Store
    * ****************************************************************/
 
   /******************************************************************

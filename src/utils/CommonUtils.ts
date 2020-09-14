@@ -3,7 +3,6 @@ export const updateVo = (vo: any, data: any) => {
   if (!data || !vo) return;
   for (const k in data) {
     const key = k as string;
-    console.log('%c [JL] updateVo - key', 'font-size: 16px; color:  red;', key);
     if (Object.prototype.hasOwnProperty.call(vo, key)) {
       vo[key] = data[key];
     }

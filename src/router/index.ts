@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from 'vue-router';
 import Home from '../views/Main.vue';
 import Store from '@/store';
 import Login from '@/views/Login.vue';
+import { AuthActionTypes } from '@/store/auth';
 
 Vue.use(VueRouter);
 
@@ -39,7 +40,7 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     try {
-      const isSessionActive = await Store.dispatch('auth/initiateAppSession');
+      const isSessionActive = await Store.dispatch(`auth/${AuthActionTypes.INIT_APP_SESSION}`);
       if (
         !isSessionActive ||
         localStorage.getItem('userId') === 'null' ||

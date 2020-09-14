@@ -1,8 +1,4 @@
 const prefix = '';
-// export enum ApiUrl {
-//   register =
-//   login = '/auth/login',
-// }
 
 export default {
   register: `${prefix}/user/signup`,

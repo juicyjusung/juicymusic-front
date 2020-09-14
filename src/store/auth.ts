@@ -3,15 +3,11 @@ import { User } from '@/types/User';
 import Vue from 'vue';
 import ApiUrl from '@/constants/apiUrl';
 
-export enum test {
-  TEST = 'TEST',
+export enum AuthStateTypes {
+  USERID = 'userId',
+  NAME = 'name',
+  IS_SESSION_ACTIVE = 'isSessionActive',
 }
-
-// export enum AuthStateTypes {
-//   USERID = 'USERID',
-//   USERNAME = 'USERNAME',
-//   IS_SESSION_ACTIVE = 'IS_SESSION_ACTIVE',
-// }
 
 export enum AuthMutationTypes {
   SET_USERID = 'SET_USERID',
@@ -19,29 +15,36 @@ export enum AuthMutationTypes {
   SET_SESSION_ACTIVE = 'SET_SESSION_ACTIVE',
 }
 
+export enum AuthActionTypes {
+  SIGNUP = 'SIGNUP',
+  LOGIN = 'LOGIN',
+  UPDATE_USER = 'UPDATE_USER',
+  LOGOUT = 'LOGOUT',
+  INIT_APP_SESSION = 'INIT_APP_SESSION',
+}
+
 @Module({
   namespaced: true,
 })
 export default class Auth extends VuexModule {
-  private userId: string = 'asd';
+  private userId: string = '';
   private name: string = '';
   private isSessionActive: boolean = false;
 
   @Mutation
-  setUserId(payload: string) {
+  [AuthMutationTypes.SET_USERID](payload: string) {
     this.userId = payload;
     localStorage.setItem('userId', this.userId);
   }
 
   @Mutation
-  setUserName(payload: string) {
+  [AuthMutationTypes.SET_USERNAME](payload: string) {
     this.name = payload;
     localStorage.setItem('name', this.name);
   }
 
   @Mutation
-  setSessionActive(payload: boolean) {
-    console.log('%c [JL] setSessionActive - payload', 'font-size: 16px; color:  red;', payload);
+  [AuthMutationTypes.SET_SESSION_ACTIVE](payload: boolean) {
     this.isSessionActive = payload;
     if (!payload) {
       localStorage.removeItem('userId');
@@ -50,7 +53,7 @@ export default class Auth extends VuexModule {
   }
 
   @Action
-  async signup(user: User) {
+  async [AuthActionTypes.SIGNUP](user: User) {
     try {
       const res = await Vue.prototype.$axios({
         method: 'post',
@@ -59,8 +62,8 @@ export default class Auth extends VuexModule {
       });
       if (res?.data) {
         const { userId, name } = res as User;
-        this.context.commit('setUserId', userId);
-        this.context.commit('setUserName', name);
+        this.context.commit(AuthMutationTypes.SET_USERID, userId);
+        this.context.commit(AuthMutationTypes.SET_USERNAME, name);
         return res.data;
       }
     } catch (e) {
@@ -69,7 +72,7 @@ export default class Auth extends VuexModule {
   }
 
   @Action
-  async login(user: User) {
+  async [AuthActionTypes.LOGIN](user: User) {
     try {
       const res = await Vue.prototype.$axios({
         method: 'post',
@@ -80,9 +83,9 @@ export default class Auth extends VuexModule {
       if (res?.data?.responseData) {
         const data = res.data.responseData;
         const { userId, name: name } = data;
-        this.context.commit('setUserId', userId);
-        this.context.commit('setUserName', name);
-        this.context.commit('setSessionActive', true);
+        this.context.commit(AuthMutationTypes.SET_USERID, userId);
+        this.context.commit(AuthMutationTypes.SET_USERNAME, name);
+        this.context.commit(AuthMutationTypes.SET_SESSION_ACTIVE, true);
         return res.data;
       }
       return res.data;
@@ -92,7 +95,7 @@ export default class Auth extends VuexModule {
   }
 
   @Action
-  async updateUser(user: User) {
+  async [AuthActionTypes.UPDATE_USER](user: User) {
     try {
       const res = await Vue.prototype.$axios({
         method: 'put',
@@ -101,8 +104,8 @@ export default class Auth extends VuexModule {
       });
       if (res?.data) {
         const { userId, name } = res as User;
-        this.context.commit('setUserId', userId);
-        this.context.commit('setUserName', name);
+        this.context.commit(AuthMutationTypes.SET_USERID, userId);
+        this.context.commit(AuthMutationTypes.SET_USERNAME, name);
         return res.data;
       }
     } catch (err) {
@@ -111,16 +114,16 @@ export default class Auth extends VuexModule {
   }
 
   @Action
-  async logout() {
+  async [AuthActionTypes.LOGOUT]() {
     try {
       await Vue.prototype.$axios({
         method: 'get',
         url: ApiUrl.logout,
       });
 
-      this.context.commit('setUserId', '');
-      this.context.commit('setUserName', '');
-      this.context.commit('setSessionActive', false);
+      this.context.commit(AuthMutationTypes.SET_USERID, '');
+      this.context.commit(AuthMutationTypes.SET_USERNAME, '');
+      this.context.commit(AuthMutationTypes.SET_SESSION_ACTIVE, false);
       localStorage.removeItem('userId');
       localStorage.removeItem('name');
     } catch (err) {
@@ -129,19 +132,18 @@ export default class Auth extends VuexModule {
   }
 
   @Action
-  async initiateAppSession() {
+  async [AuthActionTypes.INIT_APP_SESSION]() {
     const res = await Vue.prototype.$axios({
       method: 'get',
       url: ApiUrl.isSessionActive,
     });
-    console.log('%c [JL] initiateAppSession - res', 'font-size: 16px; color:  red;', res);
     if (res && res.data === true) {
-      this.context.commit('setUserId', localStorage.getItem('userId'));
-      this.context.commit('setUserName', localStorage.getItem('name'));
-      this.context.commit('setSessionActive', true);
+      this.context.commit(AuthMutationTypes.SET_USERID, localStorage.getItem('userId'));
+      this.context.commit(AuthMutationTypes.SET_USERNAME, localStorage.getItem('name'));
+      this.context.commit(AuthMutationTypes.SET_SESSION_ACTIVE, true);
       return true;
     } else {
-      this.context.commit('setSessionActive', false);
+      this.context.commit(AuthMutationTypes.SET_SESSION_ACTIVE, false);
       return false;
     }
   }

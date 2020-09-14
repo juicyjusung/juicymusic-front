@@ -49,6 +49,7 @@ import { User } from '@/types/User';
 import { getKeyValue } from '@/utils/CommonUtils';
 import { VForm } from '@/types/Common';
 import { ResponseBody } from '@/types/Reponse';
+import { AuthActionTypes, AuthStateTypes } from '@/store/auth';
 
 type EditUserInput = {
   password: string;
@@ -60,11 +61,11 @@ type EditUserInput = {
 })
 export default class MyInfo extends Vue {
   /******************************************************************
-   * Store ex: @Action('login', { namespace: 'auth' }) private login!: (user: LoginInput) => ResponseBody;
+   * Store
    * ****************************************************************/
-  @State('userId', { namespace: 'auth' }) private readonly userId!: string;
-  @State('name', { namespace: 'auth' }) private readonly name!: string;
-  @Action('updateUser', { namespace: 'auth' }) private updateUser!: (user: User) => ResponseBody;
+  @State(AuthStateTypes.USERID, { namespace: 'auth' }) private readonly userId!: string;
+  @State(AuthStateTypes.NAME, { namespace: 'auth' }) private readonly name!: string;
+  @Action(AuthActionTypes.UPDATE_USER, { namespace: 'auth' }) private updateUser!: (user: User) => ResponseBody;
   /******************************************************************
    * Props & Emit
    * ****************************************************************/
