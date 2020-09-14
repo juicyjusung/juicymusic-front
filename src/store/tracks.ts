@@ -45,7 +45,7 @@ export default class Tracks extends VuexModule {
     this.trackList = payload;
   }
   @Mutation
-  [TracksMutationTypes.SET_SELECTED_TRACK](payload: Track) {
+  [TracksMutationTypes.SET_SELECTED_TRACK](payload: Track | null) {
     this.selectedTrack = payload;
   }
   @Mutation
@@ -94,8 +94,9 @@ export default class Tracks extends VuexModule {
       console.error(e);
     }
   }
+
   @Action
-  [TracksActionTypes.SET_SELECTED_TRACK](track: Track) {
+  [TracksActionTypes.SET_SELECTED_TRACK](track: Track | null) {
     this.context.commit(TracksMutationTypes.SET_SELECTED_TRACK, track);
   }
 

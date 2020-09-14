@@ -7,7 +7,7 @@
         </div>
         <v-fade-transition>
           <v-overlay v-if="hover" absolute color="#036358">
-            <v-btn color="success" fab dark @click.stop="selectTrack(params.data)">
+            <v-btn color="success" fab dark @click.stop="playTack(params.data)">
               <v-icon>fas fa-play</v-icon>
             </v-btn>
           </v-overlay>
@@ -28,7 +28,9 @@ export default class Test extends Vue {
   /******************************************************************
    * Store
    * ****************************************************************/
-  @Action(TracksActionTypes.SET_SELECTED_TRACK, { namespace: 'tracks' }) private selectTrack!: (track: Track) => void;
+  @Action(TracksActionTypes.SET_SELECTED_TRACK, { namespace: 'tracks' }) private selectTrack!: (
+    track: Track | null
+  ) => void;
   /******************************************************************
    * Variable
    * ****************************************************************/
@@ -41,6 +43,10 @@ export default class Test extends Vue {
   /**************************************************************************
    * Methods
    * ***********************************************************************/
+  playTack(track: Track) {
+    this.selectTrack(null);
+    this.selectTrack(track);
+  }
 }
 </script>
 
