@@ -1,21 +1,51 @@
 <template>
-  <v-app>
-    <v-app-bar color="#c9c9c9" app>
-      <v-btn class="mx-2" fab dark small color="purple" @click.stop="() => (addTrackModal = true)">
-        <v-icon dark size="xs">fas fa-plus</v-icon>
-      </v-btn>
-      <v-spacer></v-spacer>
-      <v-btn primary class="mx-2" @click.stop="() => (myInfoModal = true)">MyInfo</v-btn>
-      <v-btn primary class="mx-2" @click.stop="onLogoutClick">Log out</v-btn>
-    </v-app-bar>
-    <v-main>
-      <v-container class="blue fill-height">
-        <MusicTrackList></MusicTrackList>
-      </v-container>
-    </v-main>
-    <AddTrackModal :is-show="addTrackModal" @onClose="onAddTrackModalClose"></AddTrackModal>
+  <div>
+    <v-app>
+      <v-app-bar color="#FFF" app>
+        <v-btn class="mx-2" fab dark small color="purple" @click.stop="() => (addTrackModal = true)">
+          <v-icon dark size="xs">fas fa-plus</v-icon>
+        </v-btn>
+        <v-spacer></v-spacer>
+        <v-autocomplete
+          v-model="select"
+          :loading="loading"
+          :items="data.map(v => v.title)"
+          :search-input.sync="search"
+          @input="setSearchKeyword"
+          cache-items
+          class="mx-4"
+          flat
+          hide-no-data
+          hide-details
+          label="음악 제목 검색"
+          solo-inverted
+          color="primary"
+          clearable
+        ></v-autocomplete>
+
+        <v-btn primary class="mx-2" @click.stop="() => (myInfoModal = true)">MyInfo</v-btn>
+        <v-btn primary class="mx-2" @click.stop="onLogoutClick">Log out</v-btn>
+      </v-app-bar>
+
+      <v-main>
+        <v-container class="fill-height">
+          <MusicTrackList></MusicTrackList>
+        </v-container>
+      </v-main>
+
+      <v-footer class="flex-row">
+        <aplayer
+          :key="selectedTrack && selectedTrack.filePath"
+          ref="aplayer"
+          class="flex"
+          :audio="dataForPlayer"
+          :autoplay="true"
+        ></aplayer>
+      </v-footer>
+    </v-app>
+    <AddTrackModal :key="new Date()" :is-show="addTrackModal" @onClose="onAddTrackModalClose"></AddTrackModal>
     <MyInfo :is-show="myInfoModal" @onClose="() => (myInfoModal = false)"></MyInfo>
-  </v-app>
+  </div>
 </template>
 
 <script lang="ts">
@@ -60,12 +90,28 @@ export default class Main extends Vue {
   private addTrackModal = false;
   private myInfoModal = false;
 
+  private select = '';
+  private loading = false;
+  private search = '';
+
+  get dataForPlayer() {
+    if (!this.selectedTrack) return {};
+    const track = this.selectedTrack;
+    return {
+      name: track.title,
+      artist: track.artist,
+      url: track.filePath,
+      cover: track.albumArtPath,
+    };
+  }
+
   /******************************************************************
    * Life Cycles
    * ****************************************************************/
   private created() {
     this.getAllTracks();
   }
+  private mounted() {}
 
   /******************************************************************
    * Methods
