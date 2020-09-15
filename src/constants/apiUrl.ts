@@ -7,5 +7,7 @@ export default {
   updateUser: `${prefix}/user`,
   isSessionActive: `${prefix}/user/isLoggedIn`,
   addTrack: `${prefix}/track`,
+  updateTrackFile: `${prefix}/track/file`,
+  updateTrackInfo: `${prefix}/track`,
   getAllTracks: `${prefix}/tracks`,
 };

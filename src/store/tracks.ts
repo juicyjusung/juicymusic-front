@@ -20,6 +20,8 @@ export enum TracksMutationTypes {
 export enum TracksActionTypes {
   GET_ALL_TRACKS = 'ACTION_GET_ALL_TRACKS',
   ADD_TRACK = 'ACTION_ADD_TRACK',
+  UPDATE_TRACK_FILE = 'ACTION_UPDATE_TRACK_FILE',
+  UPDATE_TRACK_INFO = 'ACTION_UPDATE_TRACK_INFO',
   SET_SELECTED_TRACK = 'ACTION_SET_SELECTED_TRACK',
   SET_SEARCH_KEYWORD = 'ACTION_SET_SEARCH_KEYWORD',
 }
@@ -88,6 +90,49 @@ export default class Tracks extends VuexModule {
         data: formData,
       });
       if (res?.data) {
+        return res.data as ResponseBody;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  @Action
+  async [TracksActionTypes.UPDATE_TRACK_FILE](track: Track) {
+    try {
+      const formData: FormData = new FormData();
+      formData.append('id', track.id as string);
+      formData.append('file', track.file as Blob);
+      if (track.albumArt.file) {
+        formData.append('image', track.albumArt.file, track.albumArt.name);
+      }
+      const res = await Vue.prototype.$axios({
+        method: 'put',
+        url: ApiUrl.updateTrackFile,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        data: formData,
+      });
+      if (res?.data) {
+        if (res.data.responseData) this.context.commit(TracksMutationTypes.SET_TRACKLIST, res.data.responseData);
+        return res.data as ResponseBody;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  @Action
+  async [TracksActionTypes.UPDATE_TRACK_INFO](track: Track) {
+    try {
+      const res = await Vue.prototype.$axios({
+        method: 'put',
+        url: ApiUrl.updateTrackInfo,
+        data: track,
+      });
+      if (res?.data) {
+        if (res.data.responseData) this.context.commit(TracksMutationTypes.SET_TRACKLIST, res.data.responseData);
         return res.data as ResponseBody;
       }
     } catch (e) {

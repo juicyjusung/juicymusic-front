@@ -1,4 +1,4 @@
-import { getKeyValue, updateVo } from '@/utils/CommonUtils';
+import { updateVo } from '@/utils/CommonUtils';
 
 export interface AlbumArt {
   name: string;
@@ -7,6 +7,7 @@ export interface AlbumArt {
 }
 
 export interface Track {
+  id?: string;
   title: string;
   artist: string;
   album: string;
@@ -17,9 +18,11 @@ export interface Track {
   createdAt?: Date | null;
   updatedAt?: Date | null;
   userId?: string | null;
+  isModified?: boolean;
 }
 
 export class TrackVo implements Track {
+  public id = '';
   public title = '';
   public album = '';
   public albumArt = {
@@ -34,6 +37,7 @@ export class TrackVo implements Track {
   public createdAt = null;
   public updatedAt = null;
   public userId = null;
+  public isModified = false;
 
   constructor(track: any | null) {
     if (track) {

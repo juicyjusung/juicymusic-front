@@ -11,6 +11,8 @@
       @grid-ready="onGridReady"
       @resize="onResize"
       @grid-size-changed="onGridSizeChanged"
+      @rowValueChanged="onDataChanged"
+      editType="fullRow"
     >
     </ag-grid-vue>
   </div>
@@ -19,7 +21,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { AgGridVue } from 'ag-grid-vue';
-import { ColDef, ColumnApi, GridApi, GridOptions } from 'ag-grid-community';
+import { ColDef, ColumnApi, GridApi, GridOptions, RowValueChangedEvent } from 'ag-grid-community';
 import Controller from './Controller.vue';
 import { Action, Getter, State } from 'vuex-class';
 import { Track } from '@/types/Track';
@@ -38,6 +40,9 @@ export default class MusicTrackList extends Vue {
   @State(TracksStateTypes.SEARCH_KEYWORD, { namespace: 'tracks' }) private search!: string;
   @Getter(TracksGettersTypes.GET_FILTERED_TRACKS, { namespace: 'tracks' }) private searchedList!: Track[];
   @Action(TracksActionTypes.GET_ALL_TRACKS, { namespace: 'tracks' }) private getAllTracks!: () => [];
+  @Action(TracksActionTypes.UPDATE_TRACK_INFO, { namespace: 'tracks' }) private updateTrackInfo!: (
+    track: Track
+  ) => Track[];
 
   /******************************************************************
    * Variable
@@ -138,6 +143,11 @@ export default class MusicTrackList extends Vue {
     });
 
     gridApi!.sizeColumnsToFit();
+  }
+
+  async onDataChanged(event: RowValueChangedEvent) {
+    const { data } = event;
+    const res = await this.updateTrackInfo(data);
   }
 }
 </script>
