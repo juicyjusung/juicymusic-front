@@ -4,7 +4,7 @@
       class="info-grid grid-card"
       style="width: 100%; height: 100%;"
       :columnDefs="columnDefs"
-      :rowData="searchedList"
+      :rowData="data"
       animateRows
       :grid-options="gridOptions"
       @first-data-rendered="onFirstDataRendered"
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { AgGridVue } from 'ag-grid-vue';
 import { ColDef, ColumnApi, GridApi, GridOptions } from 'ag-grid-community';
 import Controller from './Controller.vue';
@@ -35,6 +35,7 @@ export default class MusicTrackList extends Vue {
    * Store
    * ****************************************************************/
   @State(TracksStateTypes.TRACK_LIST, { namespace: 'tracks' }) private data!: Track[];
+  @State(TracksStateTypes.SEARCH_KEYWORD, { namespace: 'tracks' }) private search!: string;
   @Getter(TracksGettersTypes.GET_FILTERED_TRACKS, { namespace: 'tracks' }) private searchedList!: Track[];
   @Action(TracksActionTypes.GET_ALL_TRACKS, { namespace: 'tracks' }) private getAllTracks!: () => [];
 
@@ -83,6 +84,11 @@ export default class MusicTrackList extends Vue {
   private gridApi: GridApi | null = null;
   private columnApi: ColumnApi | null = null;
   private girdWrapper: HTMLElement | null = null;
+
+  @Watch('search') setFilter(search: string) {
+    const gridApi = this.gridApi as GridApi;
+    gridApi.setQuickFilter(search);
+  }
 
   /*********************************************************************************
    * Life Cycles

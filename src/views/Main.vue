@@ -6,12 +6,9 @@
           <v-icon dark size="xs">fas fa-plus</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
-        <v-autocomplete
-          v-model="select"
-          :loading="loading"
+        <v-combobox
           :items="data.map(v => v.title)"
-          :search-input.sync="search"
-          @input="setSearchKeyword"
+          @update:search-input="searchKeyword"
           cache-items
           class="mx-4"
           flat
@@ -20,8 +17,9 @@
           label="음악 제목 검색"
           solo-inverted
           color="primary"
+          hide-selected
           clearable
-        ></v-autocomplete>
+        ></v-combobox>
 
         <v-btn primary class="mx-2" @click.stop="() => (myInfoModal = true)">MyInfo</v-btn>
         <v-btn primary class="mx-2" @click.stop="onLogoutClick">Log out</v-btn>
@@ -84,10 +82,6 @@ export default class Main extends Vue {
   private addTrackModal = false;
   private myInfoModal = false;
 
-  private select = '';
-  private loading = false;
-  private search = '';
-
   get dataForPlayer() {
     if (!this.selectedTrack) return {};
     const track = this.selectedTrack;
@@ -122,6 +116,9 @@ export default class Main extends Vue {
   onAddTrackModalClose() {
     this.addTrackModal = false;
     this.getAllTracks();
+  }
+  searchKeyword(keyword: string) {
+    this.setSearchKeyword(keyword);
   }
 }
 </script>
