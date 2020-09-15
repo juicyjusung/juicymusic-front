@@ -34,16 +34,10 @@
       </v-main>
 
       <v-footer class="flex-row">
-        <aplayer
-          :key="selectedTrack && selectedTrack.filePath"
-          ref="aplayer"
-          class="flex"
-          :audio="dataForPlayer"
-          :autoplay="true"
-        ></aplayer>
+        <aplayer v-if="selectedTrack" ref="aplayer" class="flex" :audio="dataForPlayer" :autoplay="true"></aplayer>
       </v-footer>
     </v-app>
-    <AddTrackModal :key="new Date()" :is-show="addTrackModal" @onClose="onAddTrackModalClose"></AddTrackModal>
+    <AddTrackModal :key="Date.now()" :is-show="addTrackModal" @onClose="onAddTrackModalClose"></AddTrackModal>
     <MyInfo :is-show="myInfoModal" @onClose="() => (myInfoModal = false)"></MyInfo>
   </div>
 </template>
