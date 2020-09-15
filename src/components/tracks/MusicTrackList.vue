@@ -190,6 +190,13 @@ export default class MusicTrackList extends Vue {
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .ag-row-editing {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+  }
+
   .ag-row .ag-cell-value {
     letter-spacing: -1px;
     color: #555;
