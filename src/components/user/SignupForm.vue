@@ -45,8 +45,8 @@
       ></v-text-field>
     </v-card-text>
     <v-card-actions class="d-flex align-center justify-center ">
-      <v-btn class="ma-2" color="primary" @click.stop="submit">OK</v-btn>
       <v-btn class="mx-2" color="secondary" @click.stop="onClose">Cancel</v-btn>
+      <v-btn class="ma-2" color="primary" @click.stop="submit">OK</v-btn>
     </v-card-actions>
   </v-card>
 </template>
